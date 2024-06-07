@@ -1,6 +1,6 @@
 // import type { Metadata } from "next";
 // import { Inter } from "next/font/google";
-// import "./globals.css";
+import "./globals.css";
 
 import { ReactNode } from "react";
 
@@ -18,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body /* className={inter.className} */>{children}</body>
+      <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,200" />
+      </head>
+      <body className={"flex justify-center items-center font-mono m-20"}>{children}</body>
     </html>
   );
 }
