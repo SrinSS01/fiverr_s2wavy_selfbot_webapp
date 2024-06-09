@@ -12,7 +12,7 @@ export default function RootLayout({
       <head>
         <title>Self Bot</title>
       </head>
-      <body className={"flex justify-center items-center font-mono m-20"}>{children}</body>
+      <body className={"flex justify-center items-center font-mono m-20 overflow-hidden"}>{children}</body>
     </html>
   );
 }
