@@ -3,36 +3,50 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(
+            to bottom,
+            transparent,
+            rgb(var(--background-end-rgb))
+    ) rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+    .text-balance {
+        text-wrap: balance;
+    }
 }
 
 ::-webkit-scrollbar {
-  width: 0;
-  background: transparent;
+    width: 0;
+    background: transparent;
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(300px, 1fr)) minmax(500px, 2fr);
+    grid-template-rows: 1fr repeat(2, 3fr) 1fr;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.item1 { grid-column: 1; grid-row: 1 / 5; }
+.item2 { grid-column: 2; grid-row: 1 / 5; }
+.item3 { grid-column: 3 / 5; grid-row: 1 / 2; }
+.item4 { grid-column: 3 / 5; grid-row: 2 / 4; }
+.item5 { grid-column: 3 / 5; grid-row: 4; }

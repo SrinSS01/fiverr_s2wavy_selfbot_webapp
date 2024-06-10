@@ -18,7 +18,7 @@ type SelfBotUsers = {
 	bot_running: boolean;
 };
 
-const APIEndPoint = "https://studious-broccoli-vr7j4qg6p492xppj-8090.app.github.dev";//"http://127.0.0.1:8090"
+const APIEndPoint = "http://127.0.0.1:8090"; // "https://studious-broccoli-vr7j4qg6p492xppj-8090.app.github.dev";
 export type { SelfBotUsers };
 export { APIEndPoint };
 
@@ -89,8 +89,9 @@ export default function Home() {
 		<>
 			{
 				showConfig ?
-					<div className={ "text-white w-full flex" }>{ selectedUser ?
-						<ShowConfig user={ selectedUser } setShowConfig={ setShowConfig }/> : "Null" }</div>
+					<div className={ "text-white w-full h-full" }>{ selectedUser ?
+						<ShowConfig user={ selectedUser } setShowConfig={ setShowConfig }/> : "Null"
+					}</div>
 					:
 					<div className={ "flex flex-col outline outline-2 p-5 w-[700px]" }>{
 						users.map((user, index) =>
