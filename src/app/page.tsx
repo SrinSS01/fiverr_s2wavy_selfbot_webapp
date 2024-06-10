@@ -18,7 +18,7 @@ type SelfBotUsers = {
 	bot_running: boolean;
 };
 
-const APIEndPoint = "http://127.0.0.1:8090"
+const APIEndPoint = "https://studious-broccoli-vr7j4qg6p492xppj-8090.app.github.dev";//"http://127.0.0.1:8090"
 export type { SelfBotUsers };
 export { APIEndPoint };
 
@@ -63,19 +63,6 @@ export default function Home() {
 	async function StartBot(user_id: string) {
 		const response = await fetch(`${APIEndPoint}/start_bot/${ user_id }`, { method: "POST" });
 		await handleResponse(response);
-		/*fetch(`${APIEndPoint}/start_bot/${ user.user_id }`, { method: "POST" })
-											.then(async response => {
-												const json = await response.json();
-												if ( !response.ok ) {
-													setError(json)
-													setTimeout(() => setError(undefined), 5000);
-												}
-												return json;
-											}).then(json => {
-											JSON.stringify(json)
-											setTimeout(() => setSuccess(undefined), 5000);
-											fetchUsers();
-										}).catch(console.error)*/
 	}
 
 	async function DeleteBot(user_id: string) {
