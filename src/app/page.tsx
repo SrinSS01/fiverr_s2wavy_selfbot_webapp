@@ -10,6 +10,7 @@ import DeleteIcon from "./icons/Delete.svg"
 import OfflineStatusIcon from "./icons/OfflineStatus.svg"
 import OnlineStatusIcon from "./icons/OnlineStatus.svg"
 import Image from "next/image";
+import { APIEndPoint } from "./config/Config";
 
 type SelfBotUsers = {
 	user_id: string;
@@ -18,9 +19,7 @@ type SelfBotUsers = {
 	bot_running: boolean;
 };
 
-const APIEndPoint = "http://127.0.0.1:8090"; // "https://studious-broccoli-vr7j4qg6p492xppj-8090.app.github.dev";
 export type { SelfBotUsers };
-export { APIEndPoint };
 
 export default function Home() {
 	const [ users, setUsers ] = useState<SelfBotUsers[]>([]);

@@ -1,15 +1,17 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from "react";
-import { APIEndPoint, SelfBotUsers } from "../page";
+import { SelfBotUsers } from "../page";
 import Close from "../icons/Close.svg"
 import Send from "../icons/Send.svg"
 import Image from "next/image";
+import { APIEndPoint } from "../config/Config";
 
 type Guild = {
 	id: string;
 	name: string;
 	icon?: string;
+	configured: boolean;
 };
 
 type Channel = {
@@ -18,6 +20,7 @@ type Channel = {
 	guildId: string;
 	name: string;
 	parentId: string;
+	configured: boolean;
 };
 
 type MessageSchedule = {
@@ -34,7 +37,7 @@ export default function ShowConfig({ user, setShowConfig }: {
 	user: SelfBotUsers,
 	setShowConfig?: (value: ( ( (prevState: boolean) => boolean ) | boolean )) => void
 }) {
-	const [ servers, setServers ] = useState<Guild[]>([])
+	const [ guilds, setGuilds ] = useState<Guild[]>([])
 	const [ error, setError ] = useState<string | undefined>();
 	const [ success, setSuccess ] = useState<string | undefined>();
 	const [ selectedGuild, setSelectedGuild ] = useState<Guild>();
@@ -47,21 +50,21 @@ export default function ShowConfig({ user, setShowConfig }: {
 	useEffect(() => {
 		fetch(`${ APIEndPoint }/servers/${ user.user_id }`)
 			.then(res => res.json())
-			.then(_json => setServers(_json))
+			.then(_json => setGuilds(_json))
 			.catch(console.error);
 	}, []);
 	return <div className={ "w-full h-full" }>
 		<Image className={ "fixed top-5 right-10 cursor-pointer z-10 bg-red-950 rounded-full" } width={ 30 }
 			   src={ Close } alt={ "close" } onClick={ () => {
 			if ( setShowConfig ) {
-				setServers([]);
+				setGuilds([]);
 				setShowConfig(false);
 			}
 		} }/>
 		<div className={"grid-container fixed"}>
-			<div className={"item1 h-full overflow-y-auto overflow-ellipsis"}>{ servers && servers.map((guild, index) =>
+			<div className={"item1 h-full overflow-y-auto overflow-ellipsis"}>{ guilds && guilds.map((guild, index) =>
 				<div
-					className={ `flex gap-5 items-center hover:bg-green-800 p-2 m-3 cursor-pointer ${ selectedGuild?.id === guild.id ? "outline outline-2 outline-green-500 bg-green-950" : "" }` }
+					className={ `flex gap-5 items-center hover:bg-green-800 p-2 m-3 cursor-pointer ${ selectedGuild?.id === guild.id ? `${guild.configured? "outline-dashed": "outline"} outline-2 outline-green-500 bg-green-950` : guild.configured? "outline-dashed outline-2 outline-blue-500": "" }` }
 					key={ index }
 					onClick={ async () => {
 						setChannels([])
@@ -95,7 +98,7 @@ export default function ShowConfig({ user, setShowConfig }: {
 				channels.filter(channel => channel.type === 0).map((channel, index) =>
 					<div
 						key={ index }
-						className={ `m-3 p-2 pl-4 pr-4 hover:bg-orange-800 cursor-pointer ${ selectedChannel?.id === channel.id ? "outline outline-2 outline-orange-500 bg-orange-950" : "" }` }
+						className={ `m-3 p-2 pl-4 pr-4 hover:bg-orange-800 cursor-pointer ${ selectedChannel?.id === channel.id ? `${channel.configured? "outline-dashed": "outline"} outline-2 outline-orange-500 bg-orange-950` : channel.configured? "outline-2 outline-blue-500 outline-dashed": "" }` }
 						onClick={ async () => {
 							setSelectedChannel(channel);
 							const response = await fetch(`${ APIEndPoint }/schedules/${user.user_id}/${selectedGuild.id}/${channel.id}`);
@@ -174,6 +177,14 @@ export default function ShowConfig({ user, setShowConfig }: {
 									return;
 								}
 								setSchedules(body1);
+								setGuilds(guilds.map(guild => {
+									guild.configured ||= guild.id == selectedGuild.id;
+									return guild;
+								}));
+								setChannels(channels.map(channel => {
+									channel.configured ||= channel.id == selectedChannel.id;
+									return channel;
+								}));
 							} catch ( error ) {
 								console.log(error);
 							}

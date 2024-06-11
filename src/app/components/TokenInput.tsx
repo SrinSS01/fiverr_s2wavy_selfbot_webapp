@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState } from 'react';
-import { APIEndPoint, SelfBotUsers } from "@/app/page";
+import { SelfBotUsers } from "@/app/page";
+import { APIEndPoint } from '../config/Config';
 
 interface TokenInputProps {
 	resetUsers?: (value: ( ( (prevState: SelfBotUsers[]) => SelfBotUsers[] ) | SelfBotUsers[] )) => void
