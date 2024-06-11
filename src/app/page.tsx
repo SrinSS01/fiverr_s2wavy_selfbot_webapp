@@ -69,21 +69,6 @@ export default function Home() {
 		await handleResponse(response);
 	}
 
-	const ShowPlayStopButtons = ({ showPlay, is_hover, user_id }: {
-		showPlay: boolean;
-		is_hover: boolean;
-		user_id: string
-	}) => {
-		if ( !showPlay ) {
-			return <Image className={ `${ is_hover ? "block" : "hidden" } cursor-pointer` }
-						  src={ PlayIcon } alt="play"
-						  onClick={ async () => await StartBot(user_id) }/>;
-		}
-		return <Image className={ `${ is_hover ? "block" : "hidden" } cursor-pointer` }
-					  src={ StopIcon } alt="stop"
-					  onClick={ async () => await StopBot(user_id) }/>
-	}
-
 	return (
 		<>
 			{
@@ -116,8 +101,13 @@ export default function Home() {
 									</div>
 								</div>
 								<div className={ "flex items-center gap-2" }>
-									<ShowPlayStopButtons showPlay={ user.bot_running } is_hover={ hoverIndex == index }
-														 user_id={ user.user_id }/>
+									{ !user.bot_running && <Image className={ `${ hoverIndex == index ? "block" : "hidden" } cursor-pointer` }
+																src={ PlayIcon } alt="play"
+																onClick={ async () => await StartBot(user.user_id) }/> || 
+														<Image className={ `${ hoverIndex == index ? "block" : "hidden" } cursor-pointer` }
+														src={ StopIcon } alt="stop"
+														onClick={ async () => await StopBot(user.user_id) }/>
+									}
 									<Image className={ `${ hoverIndex == index ? "block" : "hidden" } cursor-pointer` }
 										   src={ EditIcon } alt="edit" onClick={ () => {
 										setShowConfig(true);

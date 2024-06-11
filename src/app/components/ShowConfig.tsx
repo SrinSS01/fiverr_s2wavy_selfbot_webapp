@@ -5,7 +5,9 @@ import { SelfBotUsers } from "../page";
 import Close from "../icons/Close.svg"
 import Send from "../icons/Send.svg"
 import Image from "next/image";
+import Search from "../icons/Search.svg"
 import { APIEndPoint } from "../config/Config";
+import Loading from "../icons/Loading.gif";
 
 type Guild = {
 	id: string;
@@ -41,19 +43,24 @@ export default function ShowConfig({ user, setShowConfig }: {
 	const [ error, setError ] = useState<string | undefined>();
 	const [ success, setSuccess ] = useState<string | undefined>();
 	const [ selectedGuild, setSelectedGuild ] = useState<Guild>();
+	const [ searchGuildName, setSearchGuildName ] = useState<string>();
+	const [ searchChannelName, setSearchChannelName ] = useState<string>();
 	const [ channels, setChannels ] = useState<Channel[]>([]);
 	const [ selectedChannel, setSelectedChannel ] = useState<Channel>();
 	const [ message, setMessage ] = useState("")
 	const [ dateTime, setDateTime ] = useState<string>()
 	const [ interval, setInterval ] = useState<number>()
 	const [ schedules, setSchedules ] = useState<MessageSchedule[]>([]);
+	const [ loadingAnimation, setLoadingAnimation ] = useState(false);
 	useEffect(() => {
+		setLoadingAnimation(true);
 		fetch(`${ APIEndPoint }/servers/${ user.user_id }`)
 			.then(res => res.json())
 			.then(_json => setGuilds(_json))
+			.then(() => setLoadingAnimation(false))
 			.catch(console.error);
 	}, []);
-	return <div className={ "w-full h-full" }>
+	return <div className={ "w-full h-full flex justify-center items-center" }>
 		<Image className={ "fixed top-5 right-10 cursor-pointer z-10 bg-red-950 rounded-full" } width={ 30 }
 			   src={ Close } alt={ "close" } onClick={ () => {
 			if ( setShowConfig ) {
@@ -61,8 +68,16 @@ export default function ShowConfig({ user, setShowConfig }: {
 				setShowConfig(false);
 			}
 		} }/>
-		<div className={"grid-container fixed"}>
-			<div className={"item1 h-full overflow-y-auto overflow-ellipsis"}>{ guilds && guilds.map((guild, index) =>
+		{ loadingAnimation && <Image src={ Loading } alt="loading"/>}
+		{ !loadingAnimation && <div className={"grid-container fixed"}>
+			<div className={"item1 h-full overflow-y-auto overflow-ellipsis"}>
+				{ guilds.length !== 0 && <div className={"sticky top-0 bg-black p-4"}>
+					<div className={"p-2 bg-black flex border-2 pl-4 pr-4"}>
+						<input placeholder="Search guild" type="text" className={"w-full bg-transparent outline-none font-mono font-bold"} onChange={ event => setSearchGuildName(event.target.value.trim()) }/>
+						<Image src={ Search } alt="search"/>
+					</div>
+				</div> }
+				{ guilds && guilds.filter(guild => searchGuildName? guild.name.match(searchGuildName): true).map((guild, index) =>
 				<div
 					className={ `flex gap-5 items-center hover:bg-green-800 p-2 m-3 cursor-pointer ${ selectedGuild?.id === guild.id ? `${guild.configured? "outline-dashed": "outline"} outline-2 outline-green-500 bg-green-950` : guild.configured? "outline-dashed outline-2 outline-blue-500": "" }` }
 					key={ index }
@@ -94,8 +109,15 @@ export default function ShowConfig({ user, setShowConfig }: {
 						<div>{ guild.id }</div>
 					</div>
 				</div>) }</div>
-			<div className={"item2 h-full overflow-y-auto overflow-ellipsis"}>{ selectedGuild &&
-				channels.filter(channel => channel.type === 0).map((channel, index) =>
+			<div className={"item2 h-full overflow-y-auto overflow-ellipsis"}>
+				{ selectedGuild && channels.length !== 0 && <div className={"sticky top-0 bg-black p-4"}>
+						<div className={"p-2 bg-black flex border-2 pl-4 pr-4"}>
+						<input placeholder="Search channel" type="text" className={"w-full bg-transparent outline-none font-mono font-bold"} onChange={ event => setSearchChannelName(event.target.value.trim()) }/>
+						<Image src={ Search } alt="search"/>
+					</div>
+				</div> }
+				{ selectedGuild &&
+				channels.filter(channel => channel.type === 0 && (searchChannelName? channel.name.match(searchChannelName): true)).map((channel, index) =>
 					<div
 						key={ index }
 						className={ `m-3 p-2 pl-4 pr-4 hover:bg-orange-800 cursor-pointer ${ selectedChannel?.id === channel.id ? `${channel.configured? "outline-dashed": "outline"} outline-2 outline-orange-500 bg-orange-950` : channel.configured? "outline-2 outline-blue-500 outline-dashed": "" }` }
@@ -190,7 +212,7 @@ export default function ShowConfig({ user, setShowConfig }: {
 							}
 						} }/> : <></> }
 				</div> }
-		</div>
+		</div> }
 		<div className={ error ? "fixed bottom-0 left-0 bg-red-500 pl-4 pr-4 p-2 font-bold" : "" }>{ error ?? "" }</div>
 		<div
 			className={ success ? "fixed bottom-0 left-0 bg-green-500 pl-4 pr-4 p-2 font-bold" : "" }>{ success ?? "" }</div>
