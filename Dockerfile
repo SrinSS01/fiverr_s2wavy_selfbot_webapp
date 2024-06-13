@@ -1,5 +1,5 @@
 FROM node:22.3.0
-WORKDIR /app/frontend
+WORKDIR /frontend
 COPY package*.json ./
 RUN yarn install
 COPY . .
