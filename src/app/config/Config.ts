@@ -1,2 +1,2 @@
-const APIEndPoint = "https://studious-broccoli-vr7j4qg6p492xppj-8090.app.github.dev"; //"http://127.0.0.1:8090";
+const APIEndPoint = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 export { APIEndPoint };
